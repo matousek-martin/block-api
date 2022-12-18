@@ -10,6 +10,8 @@ packages = [{include = "block_api"}]
 python = "^3.9"
 fastapi = "^0.88.0"
 sqlalchemy = "^1.4.45"
+uvicorn = "^0.20.0"
+pydantic = {extras = ["dotenv"], version = "^1.10.2"}
 
 
 [tool.poetry.group.dev.dependencies]
@@ -21,6 +23,7 @@ flake8 = "^6.0.0"
 pre-commit = "^2.20.0"
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
+types-requests = "^2.28.11.5"
 
 [build-system]
 requires = ["poetry-core"]
