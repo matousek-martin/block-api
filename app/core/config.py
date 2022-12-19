@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyHttpUrl, BaseSettings, HttpUrl, PostgresDsn, validator
+from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
 
 
 class Settings(BaseSettings):
@@ -33,8 +33,8 @@ class Settings(BaseSettings):
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
 
-    BLOCK_URL: HttpUrl = "https://eth.getblock.io/mainnet/"
-    BLOCK_API: str
+    BLOCK_API_URL: AnyHttpUrl = "https://eth.getblock.io/mainnet/"
+    BLOCK_API_KEY: str
 
     class Config:
         case_sensitive = True

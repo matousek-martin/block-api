@@ -32,11 +32,14 @@ async def get_block(block_number: int):
         "params": [hex(block_number), True],
     }
     headers = {
-        "x-api-key": settings.BLOCK_API,
+        "x-api-key": settings.BLOCK_API_KEY,
         "content-type": "application/json",
     }
-    response = requests.post(settings.BLOCK_URL, json=payload, headers=headers)
-    result = response.json().get("result")
+    response = requests.post(
+        settings.BLOCK_API_URL, json=payload, headers=headers
+    ).json()
+
+    result = response.get("result")
     if result is None:
         raise HTTPException(status_code=404, detail="Block number not found")
     return result
