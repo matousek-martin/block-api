@@ -36,6 +36,8 @@ class Settings(BaseSettings):
     BLOCK_API_URL: AnyHttpUrl = "https://eth.getblock.io/mainnet/"
     BLOCK_API_KEY: str
 
+    SIGNATURES_API_URL: AnyHttpUrl = "https://www.4byte.directory/api/v1/signatures"
+
     class Config:
         case_sensitive = True
         env_file = ".env"
