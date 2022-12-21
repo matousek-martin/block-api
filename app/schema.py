@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import AnyHttpUrl, BaseModel, validator
 
@@ -22,7 +22,11 @@ class Block(BaseModel):
 
 
 class Signature(BaseModel):
-    data: List[Dict[str, str]]
+    name: str
+
+
+class SignatureOut(BaseModel):
+    data: List[Signature]
     page_size: int
     is_last_page: bool
 
@@ -40,3 +44,8 @@ class FourBytesSignature(BaseModel):
     next: Optional[AnyHttpUrl]
     previous: Optional[AnyHttpUrl]
     results: List[FourBytesSignatureResult]
+    data: Optional[List[Signature]] = None
+
+    @validator("data", pre=True, always=True)
+    def assemble_data(cls, _, values: Dict[str, Any]) -> List[Signature]:
+        return [Signature(name=value.text_signature) for value in values["results"]]

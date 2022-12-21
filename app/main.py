@@ -1,10 +1,10 @@
 import requests
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.core.config import settings
-from app.schema import Block, FourBytesSignature, Signature
+from app.schema import Block, FourBytesSignature, SignatureOut
 
 
 def get_application():
@@ -46,21 +46,30 @@ async def get_block(block_number: int):
     return result
 
 
-@app.get("/signatures/{signature}", response_model=Signature)
+@app.get("/signatures/{signature}", response_model=SignatureOut)
 async def get_signature(
     signature: str,
-    page_size: int = 10,
-    page_number: int = 1,
-    provider: BaseModel = FourBytesSignature,
+    page_size: int = Query(default=10, ge=1, le=10),
+    page_number: int = Query(default=1, ge=1),
+    signature_model: BaseModel = FourBytesSignature,
 ):
-    params = {"hex_signature": signature}
+    # type: ignore
+    params = {
+        "hex_signature": signature,
+        "page_size": page_size,
+        "page": page_number,
+    }
     headers = {
         "content-type": "application/json",
     }
-    response = requests.get(settings.SIGNATURES_API_URL, params=params, headers=headers)
-    p = provider.parse_obj(response.json())
-    return {
-        "data": [{"name": result.text_signature} for result in p.results],
-        "page_size": page_size,
-        "is_last_page": False,
-    }
+    response = requests.get(
+        settings.SIGNATURES_API_URL,
+        params=params,  # type: ignore
+        headers=headers,
+    )
+    sm = signature_model.parse_obj(response.json())
+    return SignatureOut(
+        data=sm.data,
+        page_size=page_size,
+        is_last_page=sm.next is None,
+    )
