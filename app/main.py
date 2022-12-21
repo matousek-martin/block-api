@@ -67,7 +67,12 @@ async def get_signature(
         params=params,  # type: ignore
         headers=headers,
     )
+    if response.status_code == 404:
+        raise HTTPException(status_code=404, detail="Invalid page number")
+
     sm = signature_model.parse_obj(response.json())
+    if not sm.count:
+        raise HTTPException(status_code=404, detail="Signature not found")
     return SignatureOut(
         data=sm.data,
         page_size=page_size,
