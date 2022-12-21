@@ -10,10 +10,10 @@ def test_read_blocks():
     assert response.status_code == 200
     assert response.json() == {
         "number": 26803,
-        "gasLimit": 8000000,
+        "gasLimit": 5000,
         "gasUsed": 0,
-        "difficulty": 1,
-        "totalDifficulty": 46589,
+        "difficulty": 1118498710520,
+        "totalDifficulty": 17799983080356592,
     }
 
 
